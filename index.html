@@ -231,6 +231,24 @@
     color:#6d80a3;
     text-align:center;
   }
+
+  @media (max-width: 640px){
+    body{ padding:20px 14px 50px; }
+    h1{ font-size:1.15rem; }
+    .wrap{
+      flex-direction:column;
+      align-items:center;
+      gap:20px;
+    }
+    .panel{
+      order:-1;
+      width:100%;
+      max-width:420px;
+    }
+    .stage{
+      width:min(78vw, 320px);
+    }
+  }
 </style>
 </head>
 <body>
@@ -322,7 +340,7 @@ const I18N = {
   },
   st: {
     title: "Tšebeletso e Kopaneng ea Borapedi — Etsa Memo ea Hao",
-    sub: "Kenya setšoantšo sa hao, u se hule ho se beha ka har'a selikalikoe, u kenye lebitso la hao, ebe u khoasolla memo ea hao ho e arolelana litsebeng tsa hao tsa medial.",
+    sub: "Kenya setšoantšo sa hao, se hulele hore se lekane ka har'a selikalikoe, kenya lebitso la hao, ebe u downloader foto ea hao e etselitsoeng uena hore u e shere lithaleng tsa marang-rang e le memo ea hao.",
     step1: "Setšoantšo sa hao",
     step2: "Lebitso la hao",
     step3: "Mantsoe a memo",
@@ -332,7 +350,7 @@ const I18N = {
     download: "Khoasolla Memo ea Hao",
     footer: "Kereke ea Deeper Life, Ntlo-kholo Qoaling Phomolong · 19 Phupu 2026 · 10:00am",
     yourPhoto: "Setšoantšo sa Hao",
-    chips: { coming: "KE EA TLA!", there: "KE TLA BA TEENG!", join: "NTLATSE!", see: "U TLA MPONA TEENG!" }
+    chips: { coming: "KE EA TLA!", there: "KE TLA BA TEENG!", join: "TLOHO LE NNA!", see: "U TLA MPONA TEENG!" }
   }
 };
 
@@ -397,45 +415,58 @@ function render(){
   ctx.stroke();
   ctx.restore();
 
-  // Caption pill just below circle
+  // Shared background panel for caption + name — one card, for clarity
   ctx.save();
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
-  const ribbonY = CIRCLE.y + CIRCLE.r + 34;
-  ctx.font = '800 19px Poppins, sans-serif';
-  const textW = ctx.measureText(captionText).width;
-  const padX = 16, padY = 9;
+
+  const captionFont = '800 19px Poppins, sans-serif';
+  const nameFont = '800 24px Poppins, sans-serif';
+  const hasName = !!nameText.trim();
+
+  ctx.font = captionFont;
+  const captionW = ctx.measureText(captionText).width;
+  let nameW = 0;
+  if (hasName){
+    ctx.font = nameFont;
+    nameW = ctx.measureText(nameText).width;
+  }
+
+  const panelPadX = 20;
+  const panelPadTop = 14;
+  const panelPadBottom = 14;
+  const lineGap = 10;
+  const captionLineH = 24;
+  const nameLineH = 30;
+
+  const panelW = Math.max(captionW, nameW) + panelPadX * 2;
+  const panelH = hasName
+    ? panelPadTop + captionLineH + lineGap + nameLineH + panelPadBottom
+    : panelPadTop + captionLineH + panelPadBottom;
+
+  const panelTop = CIRCLE.y + CIRCLE.r + 26;
+  const panelX = CIRCLE.x - panelW / 2;
+
   ctx.fillStyle = '#0b1f3a';
-  roundRect(ctx, CIRCLE.x - textW/2 - padX, ribbonY - padY, textW + padX*2, padY*2, 16);
+  roundRect(ctx, panelX, panelTop, panelW, panelH, 18);
   ctx.fill();
   ctx.strokeStyle = '#d9a94e';
   ctx.lineWidth = 2;
-  roundRect(ctx, CIRCLE.x - textW/2 - padX, ribbonY - padY, textW + padX*2, padY*2, 16);
+  roundRect(ctx, panelX, panelTop, panelW, panelH, 18);
   ctx.stroke();
-  ctx.fillStyle = '#f3d38a';
-  ctx.fillText(captionText, CIRCLE.x, ribbonY + 1);
-  ctx.restore();
 
-  // Name pill below caption — bold sans, solid backdrop so it stays readable everywhere
-  if (nameText.trim()){
-    ctx.save();
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    const nameY = ribbonY + 40;
-    ctx.font = '800 24px Poppins, sans-serif';
-    const nameW = ctx.measureText(nameText).width;
-    const nPadX = 18, nPadY = 10;
-    ctx.fillStyle = '#0b1f3a';
-    roundRect(ctx, CIRCLE.x - nameW/2 - nPadX, nameY - nPadY, nameW + nPadX*2, nPadY*2, 16);
-    ctx.fill();
-    ctx.strokeStyle = '#d9a94e';
-    ctx.lineWidth = 2;
-    roundRect(ctx, CIRCLE.x - nameW/2 - nPadX, nameY - nPadY, nameW + nPadX*2, nPadY*2, 16);
-    ctx.stroke();
+  const captionY = panelTop + panelPadTop + captionLineH / 2;
+  ctx.font = captionFont;
+  ctx.fillStyle = '#f3d38a';
+  ctx.fillText(captionText, CIRCLE.x, captionY + 1);
+
+  if (hasName){
+    const nameY = captionY + captionLineH / 2 + lineGap + nameLineH / 2;
+    ctx.font = nameFont;
     ctx.fillStyle = '#ffffff';
     ctx.fillText(nameText, CIRCLE.x, nameY);
-    ctx.restore();
   }
+  ctx.restore();
 }
 
 function roundRect(ctx, x, y, w, h, r){
