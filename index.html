@@ -258,7 +258,7 @@ const canvas = document.getElementById('flierCanvas');
 const ctx = canvas.getContext('2d');
 
 // Circle overlay position in ORIGINAL image coordinate space (1091 x 1441)
-const CIRCLE = { x: 150, y: 155, r: 95 };
+const CIRCLE = { x: 130, y: 140, r: 112 };
 
 let flierImg = new Image();
 let userImg = null;
@@ -336,7 +336,7 @@ function render(){
   ctx.save();
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
-  const ribbonY = CIRCLE.y + CIRCLE.r + 32;
+  const ribbonY = CIRCLE.y + CIRCLE.r + 34;
   ctx.font = '800 19px Poppins, sans-serif';
   const textW = ctx.measureText(captionText).width;
   const padX = 16, padY = 9;
@@ -351,21 +351,21 @@ function render(){
   ctx.fillText(captionText, CIRCLE.x, ribbonY + 1);
   ctx.restore();
 
-  // Name pill below caption — solid backdrop so it stays readable everywhere
+  // Name pill below caption — bold sans, solid backdrop so it stays readable everywhere
   if (nameText.trim()){
     ctx.save();
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    const nameY = ribbonY + 42;
-    ctx.font = '700 27px "Dancing Script", cursive';
+    const nameY = ribbonY + 40;
+    ctx.font = '800 24px Poppins, sans-serif';
     const nameW = ctx.measureText(nameText).width;
-    const nPadX = 20, nPadY = 10;
+    const nPadX = 18, nPadY = 10;
     ctx.fillStyle = '#0b1f3a';
-    roundRect(ctx, CIRCLE.x - nameW/2 - nPadX, nameY - nPadY - 4, nameW + nPadX*2, (nPadY+4)*2, 18);
+    roundRect(ctx, CIRCLE.x - nameW/2 - nPadX, nameY - nPadY, nameW + nPadX*2, nPadY*2, 16);
     ctx.fill();
     ctx.strokeStyle = '#d9a94e';
     ctx.lineWidth = 2;
-    roundRect(ctx, CIRCLE.x - nameW/2 - nPadX, nameY - nPadY - 4, nameW + nPadX*2, (nPadY+4)*2, 18);
+    roundRect(ctx, CIRCLE.x - nameW/2 - nPadX, nameY - nPadY, nameW + nPadX*2, nPadY*2, 16);
     ctx.stroke();
     ctx.fillStyle = '#ffffff';
     ctx.fillText(nameText, CIRCLE.x, nameY);
