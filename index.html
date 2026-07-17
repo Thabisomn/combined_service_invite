@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -257,7 +258,7 @@ const canvas = document.getElementById('flierCanvas');
 const ctx = canvas.getContext('2d');
 
 // Circle overlay position in ORIGINAL image coordinate space (1091 x 1441)
-const CIRCLE = { x: 270, y: 1195, r: 118 };
+const CIRCLE = { x: 150, y: 155, r: 95 };
 
 let flierImg = new Image();
 let userImg = null;
@@ -331,34 +332,41 @@ function render(){
   ctx.stroke();
   ctx.restore();
 
-  // Caption ribbon above circle
+  // Caption pill just below circle
   ctx.save();
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
-  const ribbonY = CIRCLE.y - CIRCLE.r - 34;
-  ctx.font = '800 30px Poppins, sans-serif';
+  const ribbonY = CIRCLE.y + CIRCLE.r + 32;
+  ctx.font = '800 19px Poppins, sans-serif';
   const textW = ctx.measureText(captionText).width;
-  const padX = 26, padY = 14;
+  const padX = 16, padY = 9;
   ctx.fillStyle = '#0b1f3a';
-  roundRect(ctx, CIRCLE.x - textW/2 - padX, ribbonY - padY, textW + padX*2, padY*2, 22);
+  roundRect(ctx, CIRCLE.x - textW/2 - padX, ribbonY - padY, textW + padX*2, padY*2, 16);
   ctx.fill();
   ctx.strokeStyle = '#d9a94e';
-  ctx.lineWidth = 2.5;
-  roundRect(ctx, CIRCLE.x - textW/2 - padX, ribbonY - padY, textW + padX*2, padY*2, 22);
+  ctx.lineWidth = 2;
+  roundRect(ctx, CIRCLE.x - textW/2 - padX, ribbonY - padY, textW + padX*2, padY*2, 16);
   ctx.stroke();
   ctx.fillStyle = '#f3d38a';
-  ctx.fillText(captionText, CIRCLE.x, ribbonY + 2);
+  ctx.fillText(captionText, CIRCLE.x, ribbonY + 1);
   ctx.restore();
 
-  // Name below circle
+  // Name pill below caption — solid backdrop so it stays readable everywhere
   if (nameText.trim()){
     ctx.save();
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    const nameY = CIRCLE.y + CIRCLE.r + 44;
-    ctx.font = '700 34px "Dancing Script", cursive';
-    ctx.fillStyle = '#12234a';
-    ctx.fillText(nameText, CIRCLE.x + 1, nameY + 1);
+    const nameY = ribbonY + 42;
+    ctx.font = '700 27px "Dancing Script", cursive';
+    const nameW = ctx.measureText(nameText).width;
+    const nPadX = 20, nPadY = 10;
+    ctx.fillStyle = '#0b1f3a';
+    roundRect(ctx, CIRCLE.x - nameW/2 - nPadX, nameY - nPadY - 4, nameW + nPadX*2, (nPadY+4)*2, 18);
+    ctx.fill();
+    ctx.strokeStyle = '#d9a94e';
+    ctx.lineWidth = 2;
+    roundRect(ctx, CIRCLE.x - nameW/2 - nPadX, nameY - nPadY - 4, nameW + nPadX*2, (nPadY+4)*2, 18);
+    ctx.stroke();
     ctx.fillStyle = '#ffffff';
     ctx.fillText(nameText, CIRCLE.x, nameY);
     ctx.restore();
